@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+import altair as alt
 from src.cleaner import OGDDataCleaner
 
 # Configuración de la página
@@ -47,13 +48,37 @@ with col2:
     st.metric("Producción Total Petróleo (m3)", texto_petroleo)
 with col3:
     prod_total_gas = df_filtrado['prod_gas'].sum()
-    texto_gas = f"{prod_total_gas:,.0f}".replace(',', '.')
+    texto_gas = f"{prod_total_gas:,.0f}".replace(',', '.')  
     st.metric("Producción Total Gas (Mm3)", texto_gas)
 
 # Gráficos
 st.subheader("Top 10 Pozos Petroleros")
-# Agrupamos por pozo y sumamos la producción de petróleo, luego ordenamos y tomamos los 10 primeros
-top_pozos = df_filtrado.groupby('idpozo')['prod_pet'].sum().sort_values(ascending=False).head(10)
+
+# Agrupamos y sacamos el top 10
+top_pozos = df_filtrado.groupby(['sigla', 'empresa'])['prod_pet'].sum().reset_index()
+top_pozos = top_pozos.sort_values(by='prod_pet', ascending=False).head(10)
+
+# Armamos un gráfico horizontal interactivo con Altair
+grafico = alt.Chart(top_pozos).mark_bar().encode(
+    x=alt.X('prod_pet:Q', 
+            title='Producción Total de Petróleo (m³)', 
+            axis=alt.Axis(format='~s') # Formato abreviado (ej: 150k)
+           ),
+    y=alt.Y('sigla:N', 
+            title='Nombre del Pozo', 
+            sort='-x'
+           ), 
+    color=alt.Color('empresa:N', 
+                    legend=alt.Legend(title="Empresa Operadora", orient="bottom") # La leyenda abajo queda más limpia
+                   ),
+    tooltip=[
+        alt.Tooltip('sigla', title='Pozo'), 
+        alt.Tooltip('empresa', title='Empresa'),
+        alt.Tooltip('prod_pet', title='Producción (m³)', format=',.0f')
+    ]
+).properties(height=400)
+
+st.altair_chart(grafico, use_container_width=True)
 
 # Tabla cruda (Opcional para inspección)
 with st.expander("Ver tabla de datos limpios"):
