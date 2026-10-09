@@ -44,31 +44,31 @@ vaca-muerta-analytics/
 
 ## CÓMO EJECUTAR EL PROYECTO LOCALMENTE
 
-# 1. Clonar el repositorio y entrar a la carpeta
+### 1. Clonar el repositorio y entrar a la carpeta
 git clone https://github.com/TU_USUARIO/vaca-muerta-analytics.git
 cd vaca-muerta-analytics
 
-# 2. Crear el entorno virtual
+### 2. Crear el entorno virtual
 python -m venv venv
 
-# 3. Activar el entorno virtual 
+### 3. Activar el entorno virtual 
 # (NOTA: Usá el de Windows o el de Mac/Linux dependiendo de tu sistema)
 
-# -> Si usás Windows:
+#### -> Si usás Windows:
 venv\Scripts\activate
 
-# -> Si usás Linux o Mac:
+##### -> Si usás Linux o Mac:
 source venv/bin/activate
 
-# 4. Instalar las dependencias necesarias
+### 4. Instalar las dependencias necesarias
 pip install -r requirements.txt
 
-# 5. IMPORTANTE ANTES DE SEGUIR:
-# Descargá los CSV del "Capítulo IV" desde datos.gob.ar 
-# y guardalos dentro de la carpeta "data/raw/" de tu proyecto.
+### 5. IMPORTANTE ANTES DE SEGUIR:
+##### Descargá los CSV del "Capítulo IV" desde datos.gob.ar 
+##### y guardalos dentro de la carpeta "data/raw/" de tu proyecto.
 
-# 6. Construir la base de datos (Ejecutar el ETL)
+### 6. Construir la base de datos (Ejecutar el ETL)
 python src/data_builder.py
 
-# 7. Levantar la aplicación interactiva
+### 7. Levantar la aplicación interactiva
 streamlit run app.py
