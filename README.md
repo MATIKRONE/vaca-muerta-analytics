@@ -52,7 +52,7 @@ cd vaca-muerta-analytics
 python -m venv venv
 
 ### 3. Activar el entorno virtual 
-# (NOTA: Usá el de Windows o el de Mac/Linux dependiendo de tu sistema)
+#### (NOTA: Usá el de Windows o el de Mac/Linux dependiendo de tu sistema)
 
 #### -> Si usás Windows:
 venv\Scripts\activate
