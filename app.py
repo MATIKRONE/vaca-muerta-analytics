@@ -5,23 +5,9 @@ from src.cleaner import OGDDataCleaner
 from pathlib import Path
 import gdown
 
-# DESCARGA DE DATOS DESDE GOOGLE DRIVE
-URL_DRIVE = f'https://drive.google.com/file/d/11yBjYystY3xkZ4JUse2feT1jqDksIshy/view?usp=sharing'
-
 ruta_datos = Path('data/produccion.parquet')
 
-# Si la carpeta 'data' no existe, la crea
-ruta_datos.parent.mkdir(parents=True, exist_ok=True)
-
-# Si el archivo parquet no existe en el sistema, lo descarga de Drive
-if not ruta_datos.exists():
-    with st.spinner('☁️ Descargando base de datos desde Google Drive (esto tomará 1 o 2 minutos solo la primera vez)...'):
-        gdown.download(URL_DRIVE, str(ruta_datos), quiet=False)
-        st.success('¡Datos descargados con éxito!')
-
-# ==========================================
-# 2. CARGA DE DATOS (El código que ya tenías)
-# ==========================================
+# Carga de datos
 @st.cache_data
 def cargar_datos():
     # Asegurate de que la ruta coincida con la que acabamos de usar
