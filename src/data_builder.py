@@ -13,20 +13,19 @@ def limpiar_dataframe(df: pd.DataFrame) -> pd.DataFrame:
     """Estandariza columnas y maneja la ausencia de idpozo."""
     df.columns = df.columns.str.lower()
 
-    if 'idpozo' not in df.columns and 'sigla' in df.columns:
-        logging.info("Columna 'idpozo' no encontrada. Reemplazando con 'sigla'.")
-        df['idpozo'] = df['sigla']
-    else:
-        logging.warning("No se encontró 'idpozo' ni 'sigla' en el dataset.")
+    # SOLUCIÓN AL BUG: Primero chequeamos si NO está idpozo
+    if 'idpozo' not in df.columns:
+        # Si no está idpozo, nos fijamos si al menos está sigla
+        if 'sigla' in df.columns:
+            logging.info("Columna 'idpozo' no encontrada. Reemplazando con 'sigla'.")
+            df['idpozo'] = df['sigla']
+        else:
+            logging.warning("No se encontró 'idpozo' ni 'sigla' en el dataset.")
 
     return df
 
-
-
 def unificar_datasets():
     logging.info("Iniciando la unificación de datos...")
-    # Path(__file__) detecta automáticamente donde está este script (src/)
-    # .parent.parent sube a la carpeta raiz del proyecto
     directorio_base = Path(__file__).parent.parent
     ruta_raw = directorio_base / 'data' / 'raw'
     ruta_salida = directorio_base / 'data' / 'produccion.parquet'
@@ -56,10 +55,20 @@ def unificar_datasets():
     # Concatenación y guardado
     if lista_dataframes:
         df_maestro = pd.concat(lista_dataframes, ignore_index=True)
+        
+        # Filtro para reducir el peso del archivo
+        df_maestro.columns = df_maestro.columns.str.lower()
+        
+        if 'tipo_de_recurso' in df_maestro.columns and 'cuenca' in df_maestro.columns:
+            mask_no_convencional = df_maestro['tipo_de_recurso'].str.upper() == 'NO CONVENCIONAL'
+            mask_cuenca = df_maestro['cuenca'].str.upper() == 'NEUQUINA'
+            df_maestro = df_maestro[mask_no_convencional & mask_cuenca].copy()
+            logging.info("Filtro aplicado: Conservando solo Vaca Muerta.")
+
         df_maestro.to_parquet(ruta_salida, index=False)
 
         logging.info(f"Archivo maestro creado en {ruta_salida.name}")
-        logging.info(f"Años detectados: {anios}")
+        logging.info(f"Cantidad de registros finales de Vaca Muerta: {len(df_maestro)}")
     else:
         logging.warning("No se pudo procesar ningún DataFrame")
 

@@ -59,7 +59,7 @@ st.sidebar.header('Panel de Control')
 anio_min, anio_max = int(df_limpio['anio'].min()), int(df_limpio['anio'].max())
 
 if anio_min == anio_max:
-    st.sidebar.info(f"📅 Mostrando datos del año {anio_min}")
+    st.sidebar.info(f"Mostrando datos del año {anio_min}")
     rango_anios = (anio_min, anio_max)
 else:
     rango_anios = st.sidebar.slider("Rango Temporal", anio_min, anio_max, (anio_min, anio_max))
@@ -96,9 +96,9 @@ if df_filtrado.empty:
 
 # CREADOR DE PESTAÑAS
 tab1, tab2, tab3 = st.tabs([
-    "📊 1. Resumen Ejecutivo", 
-    "📈 2. Dinámica de Producción", 
-    "🔬 3. Salud del Reservorio"
+    "1. Resumen Ejecutivo", 
+    "2. Dinámica de Producción", 
+    "3. Salud del Reservorio"
 ])
 
 # PESTAÑA 1: VISIÓN DE NEGOCIO Y LIDERAZGO
